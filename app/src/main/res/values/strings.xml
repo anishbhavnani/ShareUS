@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">ShareUV</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="empty">No Images on this device</string>
+    <string name="camera">Camera</string>
+    <string name="folder">Folder</string>
+    <string name="done">Done</string>
+</resources>
