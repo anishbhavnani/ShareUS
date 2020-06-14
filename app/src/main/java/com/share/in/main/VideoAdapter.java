@@ -17,12 +17,14 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.share.in.R;
 
 import java.util.ArrayList;
-
+import android.util.SparseBooleanArray;
 public class VideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     private Context context;
     private ArrayList<VideoModel> imageList;
+    SparseBooleanArray itemStateArray= new SparseBooleanArray();
     private static OnItemClickListener onItemClickListener;
+
     private final static int IMAGE_LIST = 0;
     private final static int IMAGE_PICKER = 1;
 
@@ -67,6 +69,7 @@ public class VideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             } else {;
                 viewHolder.checkBox.setChecked(false);
             }
+            viewHolder.bind(position);
         } else {;
             ImagePickerViewHolder viewHolder = (ImagePickerViewHolder) holder;
             viewHolder.image.setImageResource(imageList.get(position).getResImg());
@@ -79,7 +82,7 @@ public class VideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         return imageList.size();
     }
 
-    public class ImageListViewHolder extends RecyclerView.ViewHolder {
+    public class ImageListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         ImageView image;
         CheckBox checkBox;
         TextView title,duration;
@@ -89,13 +92,30 @@ public class VideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             checkBox = itemView.findViewById(R.id.circle);
             title=itemView.findViewById(R.id.vidname);
             duration=itemView.findViewById(R.id.duration);
+            itemView.setOnClickListener(this);
+        }
 
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onItemClickListener.onItemClick(getAdapterPosition(), v);
-                }
-            });
+        void bind(int position) {
+            // use the sparse boolean array to check
+            if (!itemStateArray.get(position, false)) {
+                checkBox.setChecked(false);}
+            else {
+                checkBox.setChecked(true);
+            }
+
+        }
+
+        @Override
+        public void onClick(View v) {
+            int adapterPosition = getAdapterPosition();
+            if (!itemStateArray.get(adapterPosition, false)) {
+                checkBox.setChecked(true);
+                itemStateArray.put(adapterPosition, true);
+            }
+            else  {
+                checkBox.setChecked(false);
+                itemStateArray.put(adapterPosition, false);
+            }
         }
     }
 

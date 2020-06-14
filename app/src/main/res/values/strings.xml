@@ -6,4 +6,14 @@
     <string name="camera">Camera</string>
     <string name="folder">Folder</string>
     <string name="done">Done</string>
+
+
+
+    <plurals name="itemAmount">
+        <item quantity="zero">%d items</item>
+        <item quantity="one">1 item</item>
+        <item quantity="other">%d items</item>
+    </plurals>
+
+    <string name="action_settings">Settings</string>
 </resources>

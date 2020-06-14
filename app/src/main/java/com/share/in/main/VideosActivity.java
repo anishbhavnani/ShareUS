@@ -58,7 +58,7 @@ public class VideosActivity extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_videos, container, false);
-        selectedImageRecyclerView = view.findViewById(R.id.selected_recycler_view);
+       // selectedImageRecyclerView = view.findViewById(R.id.selected_recycler_view);
         selectedImageList = new ArrayList<>();
         imageList = new ArrayList<>();
         if (isStoragePermissionGranted()) {
@@ -120,17 +120,18 @@ public class VideosActivity extends Fragment {
     public void getAllImages(){
         imageList.clear();
         String[] projection = {MediaStore.MediaColumns.DATA, MediaStore.Video.Media.BUCKET_DISPLAY_NAME,
-                MediaStore.Video.Media._ID,MediaStore.Video.Thumbnails.DATA,MediaStore.Video.VideoColumns.DURATION,MediaStore.Video.VideoColumns.TITLE};
+                MediaStore.Video.Media._ID,MediaStore.Video.Thumbnails.DATA,MediaStore.Video.VideoColumns.DURATION,
+                MediaStore.Video.VideoColumns.SIZE};
         Log.e("getAllVideo", projection[0]);
         final String orderBy = MediaStore.Images.Media.DATE_TAKEN;
         Cursor cursor = getActivity().getContentResolver().query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, projection, null,null, orderBy + " DESC");
 
         while (cursor.moveToNext()) {
             String absolutePathOfImage = cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DATA));
-            String title = cursor.getString(cursor.getColumnIndex(MediaStore.Video.VideoColumns.TITLE));
+            String title = cursor.getString(cursor.getColumnIndex(MediaStore.Video.VideoColumns.SIZE));
             String duration = cursor.getString(cursor.getColumnIndex(MediaStore.Video.VideoColumns.DURATION));
             long timeInMillisec = Long.parseLong(duration);
-            duration=String.valueOf(timeInMillisec);
+            duration=convertMillieToHMmSs(timeInMillisec);
             int thum = cursor.getColumnIndexOrThrow(MediaStore.Video.Thumbnails.DATA);
             VideoModel VideoModel = new VideoModel();
             VideoModel.setImage(absolutePathOfImage);
@@ -168,7 +169,7 @@ public class VideosActivity extends Fragment {
         if (!selectedImageList.contains(imageList.get(position).getImage())) {
             imageList.get(position).setSelected(true);
             selectedImageList.add(0, imageList.get(position).getImage());
-            selectedImageAdapter.notifyDataSetChanged();
+            //selectedImageAdapter.notifyDataSetChanged();
             imageAdapter.notifyDataSetChanged();
         }
     }
@@ -180,7 +181,7 @@ public class VideosActivity extends Fragment {
                 if (selectedImageList.get(i).equals(imageList.get(position).getImage())) {
                     imageList.get(position).setSelected(false);
                     selectedImageList.remove(i);
-                    selectedImageAdapter.notifyDataSetChanged();
+                 //   selectedImageAdapter.notifyDataSetChanged();
                     imageAdapter.notifyDataSetChanged();
                 }
             }
@@ -264,7 +265,7 @@ public class VideosActivity extends Fragment {
         imageModel.setSelected(true);
         imageList.add(2, imageModel);
         selectedImageList.add(0, filePath);
-        selectedImageAdapter.notifyDataSetChanged();
+       // selectedImageAdapter.notifyDataSetChanged();
         imageAdapter.notifyDataSetChanged();
     }
 
@@ -285,5 +286,21 @@ public class VideosActivity extends Fragment {
             setImageList();
             //setSelectedImageList();
         }
+    }
+
+    public static String convertMillieToHMmSs(long millie) {
+        long seconds = (millie / 1000);
+        long second = seconds % 60;
+        long minute = (seconds / 60) % 60;
+        long hour = (seconds / (60 * 60)) % 24;
+
+        String result = "";
+        if (hour > 0) {
+            return String.format("%02d:%02d:%02d", hour, minute, second);
+        }
+        else {
+            return String.format("%02d:%02d" , minute, second);
+        }
+
     }
 }

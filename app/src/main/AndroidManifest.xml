@@ -22,6 +22,8 @@
             android:screenOrientation="portrait"></activity>
         <activity android:name=".main.VideosActivity"
             android:screenOrientation="portrait"></activity>
+        <activity android:name=".main.AudioActivity"
+            android:screenOrientation="portrait"></activity>
     <activity android:name=".main.MainActivity"
         android:theme="@style/AppTheme.NoActionBar">
         <intent-filter>
@@ -35,6 +37,9 @@
             android:theme="@style/Theme.AppCompat.NoActionBar"/>
         <activity
             android:name=".main.FullVideoActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar"/>
+        <activity
+            android:name=".main.FullAudioActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar"/>
     </application>
 </manifest>

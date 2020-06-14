@@ -61,13 +61,13 @@ public class ImagesActivity extends Fragment {
 
         if (isStoragePermissionGranted()) {
             imageRecyclerView = view.findViewById(R.id.recycler_view);
-            selectedImageRecyclerView = view.findViewById(R.id.selected_recycler_view);
+           // selectedImageRecyclerView = view.findViewById(R.id.selected_recycler_view);
             selectedImageList = new ArrayList<>();
             imageList = new ArrayList<>();
             init();
             getAllImages();
             setImageList();
-            setSelectedImageList();
+            //setSelectedImageList();
         }
         return view;
     }
@@ -86,16 +86,16 @@ public class ImagesActivity extends Fragment {
         imageAdapter.setOnItemClickListener(new ImageAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position, View v) {
-                    try {
-                        if (!imageList.get(position).isSelected) {
-                            selectImage(position);
-                        } else {
-                            unSelectImage(position);
-                        }
-                    } catch (ArrayIndexOutOfBoundsException ed) {
-                        ed.printStackTrace();
+                try {
+                    if (!imageList.get(position).isSelected) {
+                        selectImage(position);
+                    } else {
+                        unSelectImage(position);
                     }
+                } catch (ArrayIndexOutOfBoundsException ed) {
+                    ed.printStackTrace();
                 }
+            }
 
         });
         //setImagePickerList();
@@ -277,7 +277,7 @@ public class ImagesActivity extends Fragment {
             init();
             getAllImages();
             setImageList();
-            setSelectedImageList();
+            //setSelectedImageList();
         }
     }
 }

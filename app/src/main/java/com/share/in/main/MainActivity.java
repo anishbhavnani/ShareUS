@@ -16,6 +16,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
 import com.share.in.R;
+import com.share.in.main.view.UIFragment;
 
 public class MainActivity extends AppCompatActivity implements ContainerFragment.TabLayoutSetupCallback,
         PageFragment.OnListItemClickListener {
@@ -68,9 +69,9 @@ public class MainActivity extends AppCompatActivity implements ContainerFragment
         viewPagerAdapter.addFrag(new HistoryFragment(), "History");
         viewPagerAdapter.addFrag(new AppFragment(), "App");
         viewPagerAdapter.addFrag(new ImagesActivity(), "Photo");
-        viewPagerAdapter.addFrag(new ImagesActivity(), "Music");
+        viewPagerAdapter.addFrag(new AudioActivity(), "Music");
         viewPagerAdapter.addFrag(new VideosActivity(), "Video");
-        viewPagerAdapter.addFrag(new VideosActivity(), "File");
+        viewPagerAdapter.addFrag(new FileActivity(), "File");
         viewPagerAdapter.addFrag(new VideosActivity(), "News");
         viewPagerAdapter.addFrag(new VideosActivity(), "Status Saver");
         viewPagerAdapter.addFrag(new VideosActivity(), "Popular Video");
