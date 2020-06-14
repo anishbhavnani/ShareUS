@@ -5,6 +5,7 @@ import android.content.Context;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ public class ImageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     private Context context;
     private ArrayList<ImageModel> imageList;
     private static OnItemClickListener onItemClickListener;
+    SparseBooleanArray itemStateArray= new SparseBooleanArray();
     private final static int IMAGE_LIST = 0;
     private final static int IMAGE_PICKER = 1;
 
@@ -75,7 +77,7 @@ public class ImageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         return imageList.size();
     }
 
-    public class ImageListViewHolder extends RecyclerView.ViewHolder {
+    public class ImageListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         ImageView image;
         CheckBox checkBox;
 
@@ -83,12 +85,29 @@ public class ImageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             super(itemView);
             image = itemView.findViewById(R.id.image);
             checkBox = itemView.findViewById(R.id.circle);
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onItemClickListener.onItemClick(getAdapterPosition(), v);
-                }
-            });
+            itemView.setOnClickListener(this);
+        }
+        void bind(int position) {
+            // use the sparse boolean array to check
+            if (!itemStateArray.get(position, false)) {
+                checkBox.setChecked(false);}
+            else {
+                checkBox.setChecked(true);
+            }
+
+        }
+
+        @Override
+        public void onClick(View v) {
+            int adapterPosition = getAdapterPosition();
+            if (!itemStateArray.get(adapterPosition, false)) {
+                checkBox.setChecked(true);
+                itemStateArray.put(adapterPosition, true);
+            }
+            else  {
+                checkBox.setChecked(false);
+                itemStateArray.put(adapterPosition, false);
+            }
         }
     }
 
