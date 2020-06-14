@@ -1,44 +1,47 @@
 package com.share.in.main;
 
 import android.content.Context;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.Log;
-import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import androidx.recyclerview.widget.RecyclerView;
+import android.widget.VideoView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.share.in.R;
 
 import java.util.ArrayList;
-
-public class AudioAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
+import android.util.SparseBooleanArray;
+public class FileAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     private Context context;
-    private ArrayList<AudioModel> imageList;
+    private ArrayList<FileModel> imageList;
     SparseBooleanArray itemStateArray= new SparseBooleanArray();
     private static OnItemClickListener onItemClickListener;
 
     private final static int IMAGE_LIST = 0;
     private final static int IMAGE_PICKER = 1;
 
-    public AudioAdapter(Context context, ArrayList<AudioModel> imageList) {
+    public FileAdapter(Context context, ArrayList<FileModel> imageList) {
         this.context = context;
         this.imageList = imageList;
     }
 
     @Override
     public  RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.audio_list, parent, false);
+        if (viewType == IMAGE_LIST) {;
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.file_list, parent, false);
             return new ImageListViewHolder(view);
-
+        } else {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.video_picker_list, parent, false);
+            return new ImagePickerViewHolder(view);
+        }
     }
 
     @Override
@@ -52,16 +55,9 @@ public class AudioAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             final ImageListViewHolder viewHolder = (ImageListViewHolder) holder;
             Log.e("onBindViewHolder", "123");
             viewHolder.title.setText(imageList.get(position).getTitle());
-            viewHolder.duration.setText(imageList.get(position).getDuration());
-            viewHolder.size.setText(imageList.get(position).getSize());
-            //viewHolder.image.setAudioPath(imageList.get(position).getImage());
-        /*    Glide.with(context)
-                    .load(imageList.get(position).getImage())
-                    .placeholder(R.color.codeGray)
-                    .centerCrop()
-                    .transition(DrawableTransitionOptions.withCrossFade(500))
-                    .into(viewHolder.image);
-*/
+
+            //viewHolder.image.setVideoPath(imageList.get(position).getImage());
+
             if (imageList.get(position).isSelected()) {
                 viewHolder.checkBox.setChecked(true);
             } else {;
@@ -83,14 +79,12 @@ public class AudioAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     public class ImageListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         ImageView image;
         CheckBox checkBox;
-        TextView title,duration,size;
+        TextView title;
         public ImageListViewHolder(View itemView) {
             super(itemView);
             image = itemView.findViewById(R.id.image);
             checkBox = itemView.findViewById(R.id.circle);
             title=itemView.findViewById(R.id.vidname);
-            duration=itemView.findViewById(R.id.duration);
-            size=itemView.findViewById(R.id.vidsize);
             itemView.setOnClickListener(this);
         }
 

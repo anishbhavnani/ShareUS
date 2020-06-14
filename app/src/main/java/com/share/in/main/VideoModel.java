@@ -8,6 +8,8 @@ public class VideoModel {
     String duration;
     int resImg;
     boolean isSelected;
+    String size;
+
     private int position;
 
     public int getPosition() {
@@ -16,6 +18,14 @@ public class VideoModel {
 
     public void setPosition(int position) {
         this.position = position;
+    }
+
+    public String getSize() {
+        return size;
+    }
+
+    public void setSize(String size) {
+        this.size = size;
     }
 
     public String getImage() {

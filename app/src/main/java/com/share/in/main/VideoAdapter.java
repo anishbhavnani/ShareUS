@@ -53,9 +53,11 @@ public class VideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     public  void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
         if (holder.getItemViewType() == IMAGE_LIST) {;
             final ImageListViewHolder viewHolder = (ImageListViewHolder) holder;
-            Log.e("onBindViewHolder", "123");
+            Log.e("onBind vidsize", (viewHolder.size==null)+"");
+            Log.e("onBind getSize", (imageList.get(position).getSize()==null)+"");
             viewHolder.title.setText(imageList.get(position).getTitle());
             viewHolder.duration.setText(imageList.get(position).getDuration());
+            viewHolder.size.setText(imageList.get(position).getSize());
             //viewHolder.image.setVideoPath(imageList.get(position).getImage());
             Glide.with(context)
                     .load(imageList.get(position).getImage())
@@ -85,13 +87,14 @@ public class VideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     public class ImageListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         ImageView image;
         CheckBox checkBox;
-        TextView title,duration;
+        TextView title,duration,size;
         public ImageListViewHolder(View itemView) {
             super(itemView);
             image = itemView.findViewById(R.id.image);
             checkBox = itemView.findViewById(R.id.circle);
             title=itemView.findViewById(R.id.vidname);
             duration=itemView.findViewById(R.id.duration);
+            size=itemView.findViewById(R.id.vidsize);
             itemView.setOnClickListener(this);
         }
 

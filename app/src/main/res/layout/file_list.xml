@@ -36,37 +36,21 @@
             android:layout_marginLeft="5dp"
             android:layout_marginBottom="-5dp"
             android:background="#7F000000">
-            <ImageView
-                android:id="@+id/play_button"
-                android:layout_width="25dp"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_media_play" />
+        <ImageView
+            android:id="@+id/play_button"
+            android:layout_width="25dp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_media_play" />
 
-            <TextView
-                android:id="@+id/duration"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/play_button"
-                android:textColor="#ffffff"
-                android:textSize="10dip" />
 
         </RelativeLayout>
         <TextView
-            android:id="@+id/vidname"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_toRightOf="@+id/image"
-            android:textSize="15sp" />
-
-        <TextView
-            android:id="@+id/vidsize"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/image"
-            android:layout_alignBottom="@+id/vidname"
-            android:textSize="10sp"
-            android:layout_marginBottom="-50dp"/>
+        android:id="@+id/vidname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/image"
+        android:textSize="15sp" />
 
         <CheckBox
             android:id="@+id/circle"
@@ -79,3 +63,4 @@
             android:clickable="false" />
     </RelativeLayout>
 </androidx.cardview.widget.CardView>
+

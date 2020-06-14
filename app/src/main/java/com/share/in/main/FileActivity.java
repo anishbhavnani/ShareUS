@@ -1,27 +1,34 @@
 package com.share.in.main;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.ClipData;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.StrictMode;
 import android.provider.MediaStore;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
 
+import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
+import 	androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ListView;
+import android.widget.Toast;
 
 import com.share.in.R;
 
@@ -38,15 +45,18 @@ public class FileActivity extends Fragment {
     public static final int REQUEST_IMAGE_CAPTURE = 1;
     public static final int PICK_IMAGES = 2;
     public static final int STORAGE_PERMISSION = 100;
-
-    ArrayList<ImageModel> imageList;
+    private static final int PERMISSION_REQUEST_CODE = 100;
+    Button read;
+    ArrayList<String> myList;
+    ListView listview;
+    ArrayList<FileModel> imageList;
     ArrayList<String> selectedImageList;
     RecyclerView imageRecyclerView, selectedImageRecyclerView;
     int[] resImg = {R.drawable.ic_camera_white_30dp, R.drawable.ic_folder_white_30dp};
     String[] title = {"Camera", "Folder"};
     String mCurrentPhotoPath;
-    SelectedImageAdapter selectedImageAdapter;
-    ImageAdapter imageAdapter;
+
+    FileAdapter FileAdapter;
     String[] projection = {MediaStore.MediaColumns.DATA};
     File image;
     Button done;
@@ -57,7 +67,7 @@ public class FileActivity extends Fragment {
 
         if (isStoragePermissionGranted()) {
             imageRecyclerView = view.findViewById(R.id.recycler_view);
-           // selectedImageRecyclerView = view.findViewById(R.id.selected_recycler_view);
+            // selectedImageRecyclerView = view.findViewById(R.id.selected_recycler_view);
             selectedImageList = new ArrayList<>();
             imageList = new ArrayList<>();
             init();
@@ -75,11 +85,11 @@ public class FileActivity extends Fragment {
     }
 
     public void setImageList(){
-        imageRecyclerView.setLayoutManager(new  GridLayoutManager(getActivity(), 4));
-        imageAdapter = new  ImageAdapter(getActivity(), imageList);
-        imageRecyclerView.setAdapter(imageAdapter);
+        imageRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        FileAdapter = new  FileAdapter(getActivity(), imageList);
+        imageRecyclerView.setAdapter(FileAdapter);
 
-        imageAdapter.setOnItemClickListener(new ImageAdapter.OnItemClickListener() {
+        FileAdapter.setOnItemClickListener(new FileAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position, View v) {
                 try {
@@ -97,39 +107,61 @@ public class FileActivity extends Fragment {
         //setImagePickerList();
     }
 
-    public void setSelectedImageList(){
+    public void setSelectedImageList() {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         selectedImageRecyclerView.setLayoutManager(layoutManager);
-        selectedImageAdapter = new SelectedImageAdapter(getActivity(), selectedImageList);
-        selectedImageRecyclerView.setAdapter(selectedImageAdapter);
     }
 
     // Add Camera and Folder in ArrayList
     public void setImagePickerList(){
         for (int i = 0; i < resImg.length; i++) {
-            ImageModel imageModel = new ImageModel();
-            //imageModel.setResImg(resImg[i]);
-            //imageModel.setTitle(title[i]);
-            imageList.add(i, imageModel);
+            FileModel FileModel = new FileModel();
+            //FileModel.setResImg(resImg[i]);
+            //FileModel.setTitle(title[i]);
+            imageList.add(i, FileModel);
         }
-        imageAdapter.notifyDataSetChanged();
+        FileAdapter.notifyDataSetChanged();
     }
 
     // get all images from external storage
     public void getAllImages(){
         imageList.clear();
-        String[] projection = { MediaStore.Images.ImageColumns.DATA ,MediaStore.Images.Media.DISPLAY_NAME,
-                MediaStore.Images.Media.BUCKET_DISPLAY_NAME,MediaStore.Images.Media.BUCKET_ID};
-        Log.e("getAllImages", projection[0]);
-        final String orderBy = MediaStore.Images.Media.DATE_TAKEN;
-        Cursor cursor = getActivity().getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, projection, null,null, orderBy + " DESC");
-        while (cursor.moveToNext()) {
-            String absolutePathOfImage = cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DATA));
-            ImageModel ImageModel = new ImageModel();
-            ImageModel.setImage(absolutePathOfImage);
-            imageList.add(ImageModel);
+        String state = Environment.getExternalStorageState();
+        if (Environment.MEDIA_MOUNTED.equals(state)) {
+            if (Build.VERSION.SDK_INT >= 23) {
+                if (checkPermission()) {
+                    File dir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/");
+                    if (dir.exists()) {
+                        Log.d("path", dir.toString());
+                        File list[] = dir.listFiles();
+                        for (int i = 0; i < list.length; i++) {
+                            FileModel FileModel = new FileModel();
+                            FileModel.setPath(list[i].getAbsolutePath());
+                            FileModel.setTitle(list[i].getName());
+                            FileModel.setDirectory(list[i].isDirectory());
+                            imageList.add(FileModel);
+                        }
+                        
+                    }
+                } else {
+                    requestPermission(); // Code for permission
+                }
+            } else {
+                File dir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/");
+                if (dir.exists()) {
+                    Log.d("path", dir.toString());
+                    File list[] = dir.listFiles();
+                    for (int i = 0; i < list.length; i++) {
+                        FileModel FileModel = new FileModel();
+                        FileModel.setPath(list[i].getAbsolutePath());
+                        FileModel.setTitle(list[i].getName());
+                        FileModel.setDirectory(list[i].isDirectory());
+                        imageList.add(FileModel);
+                    }
+                }
+            }
         }
-        cursor.close();
+
     }
 
     // start the image capture Intent
@@ -155,23 +187,23 @@ public class FileActivity extends Fragment {
     // Add image in SelectedArrayList
     public void selectImage(int position) {
         // Check before add new item in ArrayList;
-        if (!selectedImageList.contains(imageList.get(position).getImage())) {
+        if (!selectedImageList.contains(imageList.get(position).getTitle())) {
             imageList.get(position).setSelected(true);
-            selectedImageList.add(0, imageList.get(position).getImage());
-            //selectedImageAdapter.notifyDataSetChanged();
-            imageAdapter.notifyDataSetChanged();
+            selectedImageList.add(0, imageList.get(position).getTitle());
+            //selectedFileAdapter.notifyDataSetChanged();
+            FileAdapter.notifyDataSetChanged();
         }
     }
 
     // Remove image from selectedImageList
     public void unSelectImage(int position) {
         for (int i = 0; i < selectedImageList.size(); i++) {
-            if (imageList.get(position).getImage() != null) {
-                if (selectedImageList.get(i).equals(imageList.get(position).getImage())) {
+            if (imageList.get(position).getTitle() != null) {
+                if (selectedImageList.get(i).equals(imageList.get(position).getTitle())) {
                     imageList.get(position).setSelected(false);
                     selectedImageList.remove(i);
-              //      selectedImageAdapter.notifyDataSetChanged();
-                    imageAdapter.notifyDataSetChanged();
+                    //      selectedFileAdapter.notifyDataSetChanged();
+                    FileAdapter.notifyDataSetChanged();
                 }
             }
         }
@@ -237,8 +269,8 @@ public class FileActivity extends Fragment {
         // Check before adding a new image to ArrayList to avoid duplicate images
         if (!selectedImageList.contains(filePath)) {
             for (int pos = 0; pos < imageList.size(); pos++) {
-                if (imageList.get(pos).getImage() != null) {
-                    if (imageList.get(pos).getImage().equalsIgnoreCase(filePath)) {
+                if (imageList.get(pos).getTitle() != null) {
+                    if (imageList.get(pos).getTitle().equalsIgnoreCase(filePath)) {
                         imageList.remove(pos);
                     }
                 }
@@ -249,13 +281,13 @@ public class FileActivity extends Fragment {
 
     // add image in selectedImageList and imageList
     public void addImage(String filePath) {
-        ImageModel imageModel = new ImageModel();
-        imageModel.setImage(filePath);
-        imageModel.setSelected(true);
-        imageList.add(2, imageModel);
+        FileModel FileModel = new FileModel();
+        FileModel.setPath(filePath);
+        FileModel.setSelected(true);
+        imageList.add(2, FileModel);
         selectedImageList.add(0, filePath);
-        //selectedImageAdapter.notifyDataSetChanged();
-        imageAdapter.notifyDataSetChanged();
+        //selectedFileAdapter.notifyDataSetChanged();
+        FileAdapter.notifyDataSetChanged();
     }
 
     public boolean isStoragePermissionGranted() {
@@ -276,4 +308,23 @@ public class FileActivity extends Fragment {
             //setSelectedImageList();
         }
     }
+
+    private boolean checkPermission() {
+        int result = ContextCompat.checkSelfPermission(getActivity(),          android.Manifest.permission.READ_EXTERNAL_STORAGE);
+        if (result == PackageManager.PERMISSION_GRANTED) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private void requestPermission() {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),  android.Manifest.permission.READ_EXTERNAL_STORAGE)) {
+            Toast.makeText(getActivity(), "Write External Storage permission allows us to read  files. Please allow this Manifest.permission in App Settings.", Toast.LENGTH_LONG).show();
+        } else {
+            ActivityCompat.requestPermissions(getActivity(), new String[]
+                    {android.Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
+        }
+    }
+
 }

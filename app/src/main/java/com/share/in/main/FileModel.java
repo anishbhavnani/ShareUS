@@ -1,24 +1,23 @@
 package com.share.in.main;
 
-public class AudioModel {
+public class FileModel {
 
-    String image;
+    String path;
     String title;
-    String thum;
-    String duration;
     int resImg;
     boolean isSelected;
     private int position;
-    String size;
+    boolean isDirectory;
 
-
-    public String getSize() {
-        return size;
+    public boolean isDirectory() {
+        return isDirectory;
     }
 
-    public void setSize(String size) {
-        this.size = size;
+    public void setDirectory(boolean isDirectory) {
+        this.isDirectory = isDirectory;
     }
+
+
     public int getPosition() {
         return position;
     }
@@ -27,28 +26,12 @@ public class AudioModel {
         this.position = position;
     }
 
-    public String getImage() {
-        return image;
+    public String getPage() {
+        return path;
     }
 
-    public void setImage(String image) {
-        this.image = image;
-    }
-
-    public String getDuration() {
-        return duration;
-    }
-
-    public void setDuration(String duration) {
-        this.duration = duration;
-    }
-
-    public String getThum() {
-        return thum;
-    }
-
-    public void setThum(String thum) {
-        this.thum = thum;
+    public void setPath(String path) {
+        this.path = path;
     }
 
     public String getTitle() {
