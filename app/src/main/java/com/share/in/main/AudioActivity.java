@@ -132,6 +132,7 @@ public class AudioActivity extends Fragment {
       String title = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DISPLAY_NAME));
       String duration = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.AudioColumns.DURATION));
       long timeInMillisec = Long.parseLong(duration);
+      String path=cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
       duration=convertMillieToHMmSs(timeInMillisec);
       // int thum = cursor.getColumnIndexOrThrow(MediaStore.Audio.Thumbnails.DATA);
       AudioModel AudioModel = new AudioModel();
@@ -143,6 +144,31 @@ public class AudioActivity extends Fragment {
       AudioModel.setTitle(title);
       AudioModel.setSize(sizeColInd);
       AudioModel.setDuration(duration);
+      AudioModel.setPath(path);
+      imageList.add(AudioModel);
+    }
+    cursor.close();
+
+    cursor = getActivity().getContentResolver().query(MediaStore.Audio.Media.INTERNAL_CONTENT_URI, projection, null,null, null);
+
+    while (cursor.moveToNext()) {
+      //String absolutePathOfImage = cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DATA));
+      String title = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DISPLAY_NAME));
+      String duration = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.AudioColumns.DURATION));
+      long timeInMillisec = Long.parseLong(duration);
+      String path=cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
+      duration=convertMillieToHMmSs(timeInMillisec);
+      // int thum = cursor.getColumnIndexOrThrow(MediaStore.Audio.Thumbnails.DATA);
+      AudioModel AudioModel = new AudioModel();
+      // AudioModel.setImage(absolutePathOfImage);
+      //AudioModel.setThum(cursor.getString(thum));
+      String sizeColInd = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.AudioColumns.SIZE));
+      long fileSize = Long.parseLong(sizeColInd);
+      sizeColInd=android.text.format.Formatter.formatFileSize(getActivity().getApplicationContext(), fileSize);
+      AudioModel.setTitle(title);
+      AudioModel.setSize(sizeColInd);
+      AudioModel.setDuration(duration);
+      AudioModel.setPath(path);
       imageList.add(AudioModel);
     }
     cursor.close();

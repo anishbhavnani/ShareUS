@@ -133,7 +133,7 @@ public class VideosActivity extends Fragment {
       long timeInMillisec = Long.parseLong(duration);
       duration=convertMillieToHMmSs(timeInMillisec);
       int thum = cursor.getColumnIndexOrThrow(MediaStore.Video.Thumbnails.DATA);
-      Log.e("getAllVideo sIZE", cursor.getLong(cursor.getColumnIndex(MediaStore.Video.VideoColumns.SIZE)) +"");
+
       String sizeColInd = cursor.getString(cursor.getColumnIndex(MediaStore.Video.VideoColumns.SIZE));
       long fileSize = Long.parseLong(sizeColInd);
       sizeColInd=android.text.format.Formatter.formatFileSize(getActivity().getApplicationContext(), fileSize);
@@ -143,6 +143,31 @@ public class VideosActivity extends Fragment {
       VideoModel.setTitle(title);
       VideoModel.setDuration(duration);
       VideoModel.setSize(sizeColInd);
+      VideoModel.setPath(absolutePathOfImage);
+      imageList.add(VideoModel);
+    }
+    cursor.close();
+
+    cursor = getActivity().getContentResolver().query(MediaStore.Video.Media.INTERNAL_CONTENT_URI, projection, null,null, orderBy + " DESC");
+
+    while (cursor.moveToNext()) {
+      String absolutePathOfImage = cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DATA));
+      String title = cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.DISPLAY_NAME));
+      String duration = cursor.getString(cursor.getColumnIndex(MediaStore.Video.VideoColumns.DURATION));
+      long timeInMillisec = Long.parseLong(duration);
+      duration=convertMillieToHMmSs(timeInMillisec);
+      int thum = cursor.getColumnIndexOrThrow(MediaStore.Video.Thumbnails.DATA);
+
+      String sizeColInd = cursor.getString(cursor.getColumnIndex(MediaStore.Video.VideoColumns.SIZE));
+      long fileSize = Long.parseLong(sizeColInd);
+      sizeColInd=android.text.format.Formatter.formatFileSize(getActivity().getApplicationContext(), fileSize);
+      VideoModel VideoModel = new VideoModel();
+      VideoModel.setImage(absolutePathOfImage);
+      VideoModel.setThum(cursor.getString(thum));
+      VideoModel.setTitle(title);
+      VideoModel.setDuration(duration);
+      VideoModel.setSize(sizeColInd);
+      VideoModel.setPath(absolutePathOfImage);
       imageList.add(VideoModel);
     }
     cursor.close();

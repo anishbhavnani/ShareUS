@@ -7,7 +7,15 @@ public class ImageModel {
     int resImg;
     boolean isSelected;
     private int position;
+    String path;
 
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
     public int getPosition() {
         return position;
     }

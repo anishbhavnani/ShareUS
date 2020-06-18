@@ -1,24 +1,32 @@
 package com.share.in.main;
 
-public class FileModel {
+import android.graphics.drawable.Drawable;
 
-    String path;
+public class AppModel {
+
+    Drawable image;
     String title;
     int resImg;
     boolean isSelected;
     private int position;
+    String path;
+    String appSize;
 
-    public boolean isDirectory() {
-        return isDirectory;
+    public String getAppSize() {
+        return appSize;
     }
 
-    public void setDirectory(boolean directory) {
-        isDirectory = directory;
+    public void setAppSize(String appSize) {
+        this.appSize = appSize;
     }
 
-    boolean isDirectory;
+    public String getPath() {
+        return path;
+    }
 
-
+    public void setPath(String path) {
+        this.path = path;
+    }
 
     public int getPosition() {
         return position;
@@ -28,12 +36,12 @@ public class FileModel {
         this.position = position;
     }
 
-    public String getPath() {
-        return path;
+    public Drawable getImage() {
+        return image;
     }
 
-    public void setPath(String path) {
-        this.path = path;
+    public void setImage(Drawable image) {
+        this.image = image;
     }
 
     public String getTitle() {

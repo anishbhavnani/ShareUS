@@ -1,47 +1,41 @@
+
 package com.share.in.main;
 
 import android.content.Context;
-import androidx.recyclerview.widget.RecyclerView;
-
-import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.VideoView;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.share.in.R;
 
 import java.util.ArrayList;
-import android.util.SparseBooleanArray;
-public class FileAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
+
+public class AppAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     private Context context;
-    private ArrayList<FileModel> imageList;
-    SparseBooleanArray itemStateArray= new SparseBooleanArray();
+    private ArrayList<AppModel> imageList;
     private static OnItemClickListener onItemClickListener;
-
+    SparseBooleanArray itemStateArray= new SparseBooleanArray();
     private final static int IMAGE_LIST = 0;
     private final static int IMAGE_PICKER = 1;
 
-    public FileAdapter(Context context, ArrayList<FileModel> imageList) {
+    public AppAdapter(Context context, ArrayList<AppModel> imageList) {
         this.context = context;
         this.imageList = imageList;
     }
 
     @Override
     public  RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        if (viewType == IMAGE_LIST) {;
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.file_list, parent, false);
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.app_list, parent, false);
             return new ImageListViewHolder(view);
-        } else {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.video_picker_list, parent, false);
-            return new ImagePickerViewHolder(view);
-        }
     }
 
     @Override
@@ -53,17 +47,14 @@ public class FileAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     public  void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
         if (holder.getItemViewType() == IMAGE_LIST) {;
             final ImageListViewHolder viewHolder = (ImageListViewHolder) holder;
-
-            viewHolder.title.setText(imageList.get(position).getTitle());
-viewHolder.position=position;
-            //viewHolder.image.setVideoPath(imageList.get(position).getImage());
-
-            if (imageList.get(position).isSelected()) {
+            viewHolder.appname.setText(imageList.get(position).getTitle());
+            viewHolder.image.setImageDrawable(imageList.get(position).getImage());
+            viewHolder.appsize.setText(imageList.get(position).getAppSize());
+            if (imageList.get(position).isSelected()) {;
                 viewHolder.checkBox.setChecked(true);
             } else {;
                 viewHolder.checkBox.setChecked(false);
             }
-            viewHolder.bind(position);
         } else {;
             ImagePickerViewHolder viewHolder = (ImagePickerViewHolder) holder;
             viewHolder.image.setImageResource(imageList.get(position).getResImg());
@@ -76,28 +67,19 @@ viewHolder.position=position;
         return imageList.size();
     }
 
-    public class ImageListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ImageListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+        TextView appname,appsize;
         ImageView image;
         CheckBox checkBox;
-        TextView title;
-        int position;
+
         public ImageListViewHolder(View itemView) {
             super(itemView);
+            appname = itemView.findViewById(R.id.appname);
             image = itemView.findViewById(R.id.image);
+            appsize = itemView.findViewById(R.id.appsize);
             checkBox = itemView.findViewById(R.id.circle);
-            title=itemView.findViewById(R.id.vidname);
-
             itemView.setOnClickListener(this);
-            checkBox.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Log.e("onBindViewHolder", "123");
-                    
-                    new FileActivity(imageList.get(position).getPath());
-                }
-            });
         }
-
         void bind(int position) {
             // use the sparse boolean array to check
             if (!itemStateArray.get(position, false)) {
@@ -105,22 +87,20 @@ viewHolder.position=position;
             else {
                 checkBox.setChecked(true);
             }
-this.position=position;
+
         }
 
         @Override
         public void onClick(View v) {
             int adapterPosition = getAdapterPosition();
-            Log.e("onBindViewHolder", "456");
-            /*if (!itemStateArray.get(adapterPosition, false)) {
+            if (!itemStateArray.get(adapterPosition, false)) {
                 checkBox.setChecked(true);
                 itemStateArray.put(adapterPosition, true);
             }
             else  {
                 checkBox.setChecked(false);
                 itemStateArray.put(adapterPosition, false);
-            }*/
-            new FileActivity(imageList.get(position).getPath());
+            }
         }
     }
 

@@ -9,6 +9,15 @@ public class VideoModel {
     int resImg;
     boolean isSelected;
     String size;
+    String path;
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
 
     private int position;
 

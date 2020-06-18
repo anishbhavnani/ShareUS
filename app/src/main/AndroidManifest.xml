@@ -24,6 +24,8 @@
             android:screenOrientation="portrait"></activity>
         <activity android:name=".main.AudioActivity"
             android:screenOrientation="portrait"></activity>
+        <activity android:name=".main.AppsActivity"
+            android:screenOrientation="portrait"></activity>
     <activity android:name=".main.MainActivity"
         android:theme="@style/AppTheme.NoActionBar">
         <intent-filter>

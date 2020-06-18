@@ -60,7 +60,18 @@ public class FileActivity extends Fragment {
     String[] projection = {MediaStore.MediaColumns.DATA};
     File image;
     Button done;
+String fpath;
+    public FileActivity(){
 
+    }
+    public FileActivity(String fpath){
+        super();
+        Log.d("FileActivity", "FileActivity path");
+        this.fpath=fpath;
+        init();
+        getAllImages();
+        setImageList();
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_images, container, false);
@@ -93,8 +104,11 @@ public class FileActivity extends Fragment {
             @Override
             public void onItemClick(int position, View v) {
                 try {
+                    Log.d("FileActivity", "selectImage 123");
                     if (!imageList.get(position).isSelected) {
                         selectImage(position);
+                        Log.d("FileActivity", "selectImage");
+                        new FileActivity(imageList.get(position).getPath());
                     } else {
                         unSelectImage(position);
                     }
@@ -129,8 +143,13 @@ public class FileActivity extends Fragment {
         String state = Environment.getExternalStorageState();
         if (Environment.MEDIA_MOUNTED.equals(state)) {
             if (Build.VERSION.SDK_INT >= 23) {
-                if (checkPermission()) {
-                    File dir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/");
+                if (true) {
+                    String envPath=Environment.getExternalStorageDirectory().getAbsolutePath() + "/";
+
+                    if(fpath!=null && fpath.length()>0)
+                        envPath=envPath+fpath+"/";
+                    Log.d("envpath", envPath);
+                    File dir = new File(envPath);
                     if (dir.exists()) {
                         Log.d("path", dir.toString());
                         File list[] = dir.listFiles();
@@ -310,7 +329,7 @@ public class FileActivity extends Fragment {
     }
 
     private boolean checkPermission() {
-        int result = ContextCompat.checkSelfPermission(getActivity(),          android.Manifest.permission.READ_EXTERNAL_STORAGE);
+        int result = ContextCompat.checkSelfPermission(getActivity(),android.Manifest.permission.READ_EXTERNAL_STORAGE);
         if (result == PackageManager.PERMISSION_GRANTED) {
             return true;
         } else {

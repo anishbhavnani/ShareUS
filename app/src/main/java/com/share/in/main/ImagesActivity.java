@@ -129,8 +129,21 @@ public class ImagesActivity extends Fragment {
         Cursor cursor = getActivity().getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, projection, null,null, orderBy + " DESC");
         while (cursor.moveToNext()) {
             String absolutePathOfImage = cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DATA));
+            String path=cursor.getString(cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA));
             ImageModel ImageModel = new ImageModel();
             ImageModel.setImage(absolutePathOfImage);
+            ImageModel.setPath(path);
+            imageList.add(ImageModel);
+        }
+        cursor.close();
+
+        cursor = getActivity().getContentResolver().query(MediaStore.Images.Media.INTERNAL_CONTENT_URI, projection, null,null, orderBy + " DESC");
+        while (cursor.moveToNext()) {
+            String absolutePathOfImage = cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DATA));
+            String path=cursor.getString(cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA));
+            ImageModel ImageModel = new ImageModel();
+            ImageModel.setImage(absolutePathOfImage);
+            ImageModel.setPath(path);
             imageList.add(ImageModel);
         }
         cursor.close();

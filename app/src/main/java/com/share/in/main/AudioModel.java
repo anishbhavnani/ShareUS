@@ -10,7 +10,15 @@ public class AudioModel {
     boolean isSelected;
     private int position;
     String size;
+    String path;
 
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
 
     public String getSize() {
         return size;

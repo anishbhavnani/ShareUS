@@ -16,39 +16,39 @@ import java.util.ArrayList;
 
 public class SelectedVideoAdapter extends RecyclerView.Adapter<SelectedVideoAdapter.ViewHolder>{
 
-    Context context;
-    ArrayList<String> stringArrayList;
+  Context context;
+  ArrayList<String> stringArrayList;
 
-    public SelectedVideoAdapter(Context context, ArrayList<String> stringArrayList) {
-        this.context = context;
-        this.stringArrayList = stringArrayList;
-    }
+  public SelectedVideoAdapter(Context context, ArrayList<String> stringArrayList) {
+    this.context = context;
+    this.stringArrayList = stringArrayList;
+  }
 
-    @Override
-    public  ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(context).inflate(R.layout.selected_video_list, viewGroup, false);
-        return new ViewHolder(view);
-    }
-    @Override
-    public  void onBindViewHolder(ViewHolder holder, final int position) {
-        holder.image.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                context.startActivity(new Intent(context, FullVideoActivity.class).putExtra("image", stringArrayList.get(position)));
-            }
-        });
-    }
+  @Override
+  public  ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+    View view = LayoutInflater.from(context).inflate(R.layout.selected_video_list, viewGroup, false);
+    return new ViewHolder(view);
+  }
+  @Override
+  public  void onBindViewHolder(ViewHolder holder, final int position) {
+    holder.image.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        context.startActivity(new Intent(context, FullVideoActivity.class).putExtra("image", stringArrayList.get(position)));
+      }
+    });
+  }
 
-    @Override
-    public int getItemCount() {
-        return stringArrayList.size();
-    }
+  @Override
+  public int getItemCount() {
+    return stringArrayList.size();
+  }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView image;
-        public ViewHolder(View itemView) {
-            super(itemView);
-            image = (ImageView) itemView.findViewById(R.id.image);
-        }
+  public class ViewHolder extends RecyclerView.ViewHolder {
+    ImageView image;
+    public ViewHolder(View itemView) {
+      super(itemView);
+      image = (ImageView) itemView.findViewById(R.id.image);
     }
+  }
 }
