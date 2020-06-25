@@ -1,8 +1,14 @@
 package com.share.in.main;
 
 import android.content.Context;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +27,7 @@ import android.util.SparseBooleanArray;
 public class FileAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     private Context context;
+    private FileActivity fa;
     private ArrayList<FileModel> imageList;
     SparseBooleanArray itemStateArray= new SparseBooleanArray();
     private static OnItemClickListener onItemClickListener;
@@ -28,7 +35,7 @@ public class FileAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     private final static int IMAGE_LIST = 0;
     private final static int IMAGE_PICKER = 1;
 
-    public FileAdapter(Context context, ArrayList<FileModel> imageList) {
+    public FileAdapter(Context context, ArrayList<FileModel> imageList,FileActivity fa) {
         this.context = context;
         this.imageList = imageList;
     }
@@ -87,13 +94,17 @@ viewHolder.position=position;
             checkBox = itemView.findViewById(R.id.circle);
             title=itemView.findViewById(R.id.vidname);
 
-            itemView.setOnClickListener(this);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onItemClickListener.onItemClick(getAdapterPosition(), v);
+                }
+            });
             checkBox.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Log.e("onBindViewHolder", "123");
-                    
-                    new FileActivity(imageList.get(position).getPath());
+
                 }
             });
         }
@@ -120,7 +131,7 @@ this.position=position;
                 checkBox.setChecked(false);
                 itemStateArray.put(adapterPosition, false);
             }*/
-            new FileActivity(imageList.get(position).getPath());
+//            new FileActivity(imageList.get(position).getPath());
         }
     }
 

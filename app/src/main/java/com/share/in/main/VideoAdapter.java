@@ -53,8 +53,7 @@ public class VideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     public  void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
         if (holder.getItemViewType() == IMAGE_LIST) {;
             final ImageListViewHolder viewHolder = (ImageListViewHolder) holder;
-            Log.e("onBind vidsize", (viewHolder.size==null)+"");
-            Log.e("onBind getSize", (imageList.get(position).getSize()==null)+"");
+
             viewHolder.title.setText(imageList.get(position).getTitle());
             viewHolder.duration.setText(imageList.get(position).getDuration());
             viewHolder.size.setText(imageList.get(position).getSize());

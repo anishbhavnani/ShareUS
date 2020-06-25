@@ -22,6 +22,7 @@ import 	androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,13 +35,14 @@ import com.share.in.R;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.FieldPosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
 import static android.app.Activity.RESULT_OK;
 
-public class FileActivity extends Fragment {
+public class FileActivity extends Fragment implements View.OnClickListener {
 
     public static final int REQUEST_IMAGE_CAPTURE = 1;
     public static final int PICK_IMAGES = 2;
@@ -64,26 +66,53 @@ String fpath;
     public FileActivity(){
 
     }
-    public FileActivity(String fpath){
-        super();
+    public void setPath(String fpath){
+
         Log.d("FileActivity", "FileActivity path");
         this.fpath=fpath;
         init();
         getAllImages();
         setImageList();
+        FileAdapter.notifyDataSetChanged();
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_images, container, false);
 
         if (isStoragePermissionGranted()) {
+            view.setFocusableInTouchMode(true);
+            view.requestFocus();
+            view.setOnKeyListener(new View.OnKeyListener() {
+                @Override
+                public boolean onKey(View v, int keyCode, KeyEvent event) {
+                    Log.e("FileActivity", "key123");
+                    if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                        Log.e("FileActivity", "key456");
+                        if (keyCode == KeyEvent.KEYCODE_BACK) {
+                            Log.e("FileActivity", "key789");
+                            if(imageList.size()>0) {
+                                fpath = imageList.get(0).getParentDir();
+                                File f=new File(fpath);
+                                setPath(f.getAbsoluteFile().getParent());
+                                return true;
+                            }
+                        }
+                    }
+                    return false;
+                }
+            });
             imageRecyclerView = view.findViewById(R.id.recycler_view);
             // selectedImageRecyclerView = view.findViewById(R.id.selected_recycler_view);
+            Bundle b = getArguments();
+            if(b!=null)
+                fpath=b.getString("position");
+
             selectedImageList = new ArrayList<>();
             imageList = new ArrayList<>();
             init();
             getAllImages();
             setImageList();
+
             //setSelectedImageList();
         }
         return view;
@@ -97,21 +126,14 @@ String fpath;
 
     public void setImageList(){
         imageRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        FileAdapter = new  FileAdapter(getActivity(), imageList);
+        FileAdapter = new  FileAdapter(getActivity(), imageList, FileActivity.this);
         imageRecyclerView.setAdapter(FileAdapter);
 
         FileAdapter.setOnItemClickListener(new FileAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position, View v) {
                 try {
-                    Log.d("FileActivity", "selectImage 123");
-                    if (!imageList.get(position).isSelected) {
-                        selectImage(position);
-                        Log.d("FileActivity", "selectImage");
-                        new FileActivity(imageList.get(position).getPath());
-                    } else {
-                        unSelectImage(position);
-                    }
+                    setPath(imageList.get(position).getPath());
                 } catch (ArrayIndexOutOfBoundsException ed) {
                     ed.printStackTrace();
                 }
@@ -147,21 +169,25 @@ String fpath;
                     String envPath=Environment.getExternalStorageDirectory().getAbsolutePath() + "/";
 
                     if(fpath!=null && fpath.length()>0)
-                        envPath=envPath+fpath+"/";
-                    Log.d("envpath", envPath);
+                        envPath=fpath+"/";
+                    Log.e("envpath", envPath);
                     File dir = new File(envPath);
-                    if (dir.exists()) {
-                        Log.d("path", dir.toString());
+
+                    if (dir.getAbsoluteFile().exists()) {
+                        Log.e("path", dir.toString());
                         File list[] = dir.listFiles();
                         for (int i = 0; i < list.length; i++) {
                             FileModel FileModel = new FileModel();
                             FileModel.setPath(list[i].getAbsolutePath());
                             FileModel.setTitle(list[i].getName());
                             FileModel.setDirectory(list[i].isDirectory());
+                            FileModel.setParentDir(envPath);
                             imageList.add(FileModel);
                         }
-                        
+
                     }
+                    else
+                        Log.e("error path", envPath +" : "+dir.exists());
                 } else {
                     requestPermission(); // Code for permission
                 }
@@ -345,5 +371,18 @@ String fpath;
                     {android.Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
         }
     }
-
+    @Override
+    public void onClick(View v) {
+        //int adapterPosition = getActivity().getAdapterPosition();
+        Log.e("onBindViewHolder", "45678");
+            /*if (!itemStateArray.get(adapterPosition, false)) {
+                checkBox.setChecked(true);
+                itemStateArray.put(adapterPosition, true);
+            }
+            else  {
+                checkBox.setChecked(false);
+                itemStateArray.put(adapterPosition, false);
+            }*/
+        //new FileActivity(imageList.get(position).getPath());
+    }
 }

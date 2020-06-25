@@ -7,6 +7,15 @@ public class FileModel {
     int resImg;
     boolean isSelected;
     private int position;
+    String parentDir;
+
+    public String getParentDir() {
+        return parentDir;
+    }
+
+    public void setParentDir(String parentDir) {
+        this.parentDir = parentDir;
+    }
 
     public boolean isDirectory() {
         return isDirectory;

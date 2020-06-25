@@ -59,7 +59,7 @@ public class AppsActivity extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Log.e("getAPkFilePath", "123456");
+
         View view = inflater.inflate(R.layout.activity_apps, container, false);
 
         if (isStoragePermissionGranted()) {
@@ -67,7 +67,7 @@ public class AppsActivity extends Fragment {
            // selectedImageRecyclerView = view.findViewById(R.id.selected_recycler_view);
             selectedImageList = new ArrayList<>();
             imageList = new ArrayList<>();
-            Log.e("getAPkFilePath", "123");
+
             init();
             getAllImages();
             setImageList();
@@ -130,7 +130,7 @@ public class AppsActivity extends Fragment {
     // get all images from external storage
     public void getAllImages(){
         imageList.clear();
-        Log.e("getAPkFilePath", "123");
+
         packageManager = getActivity().getPackageManager();
         List<PackageInfo> packageList = packageManager
                 .getInstalledPackages(PackageManager.GET_PERMISSIONS);
@@ -154,7 +154,7 @@ public class AppsActivity extends Fragment {
                 long size = file.length();
                 AppModel appModel=new AppModel();
                 appModel.setTitle(appName);
-                Log.e("getAPkFilePath", appName);
+
                 appModel.setImage(appIcon);
                 appModel.setAppSize(android.text.format.Formatter.formatFileSize(getActivity().getApplicationContext(), size)+"");
                 if (!b) {
