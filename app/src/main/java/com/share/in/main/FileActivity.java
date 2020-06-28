@@ -6,6 +6,8 @@ import android.content.ClipData;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -14,6 +16,7 @@ import android.os.StrictMode;
 import android.provider.MediaStore;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -33,8 +36,14 @@ import android.widget.Toast;
 
 import com.share.in.R;
 
+import org.apache.commons.io.FilenameUtils;
+
 import java.io.File;
 import java.io.IOException;
+import java.net.URLConnection;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.*;
 import java.text.FieldPosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -66,7 +75,8 @@ String fpath;
     public FileActivity(){
 
     }
-    public void setPath(String fpath){
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void setPath(String fpath) throws IOException {
 
         Log.d("FileActivity", "FileActivity path");
         this.fpath=fpath;
@@ -75,6 +85,7 @@ String fpath;
         setImageList();
         FileAdapter.notifyDataSetChanged();
     }
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_images, container, false);
@@ -83,6 +94,7 @@ String fpath;
             view.setFocusableInTouchMode(true);
             view.requestFocus();
             view.setOnKeyListener(new View.OnKeyListener() {
+                @RequiresApi(api = Build.VERSION_CODES.O)
                 @Override
                 public boolean onKey(View v, int keyCode, KeyEvent event) {
                     Log.e("FileActivity", "key123");
@@ -93,7 +105,11 @@ String fpath;
                             if(imageList.size()>0) {
                                 fpath = imageList.get(0).getParentDir();
                                 File f=new File(fpath);
-                                setPath(f.getAbsoluteFile().getParent());
+                                try {
+                                    setPath(f.getAbsoluteFile().getParent());
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
                                 return true;
                             }
                         }
@@ -110,7 +126,11 @@ String fpath;
             selectedImageList = new ArrayList<>();
             imageList = new ArrayList<>();
             init();
-            getAllImages();
+            try {
+                getAllImages();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             setImageList();
 
             //setSelectedImageList();
@@ -130,11 +150,12 @@ String fpath;
         imageRecyclerView.setAdapter(FileAdapter);
 
         FileAdapter.setOnItemClickListener(new FileAdapter.OnItemClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onItemClick(int position, View v) {
                 try {
                     setPath(imageList.get(position).getPath());
-                } catch (ArrayIndexOutOfBoundsException ed) {
+                } catch (ArrayIndexOutOfBoundsException | IOException ed) {
                     ed.printStackTrace();
                 }
             }
@@ -160,14 +181,15 @@ String fpath;
     }
 
     // get all images from external storage
-    public void getAllImages(){
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void getAllImages() throws IOException {
         imageList.clear();
         String state = Environment.getExternalStorageState();
         if (Environment.MEDIA_MOUNTED.equals(state)) {
             if (Build.VERSION.SDK_INT >= 23) {
                 if (true) {
                     String envPath=Environment.getExternalStorageDirectory().getAbsolutePath() + "/";
-
+                    String mimeType="",extension="";
                     if(fpath!=null && fpath.length()>0)
                         envPath=fpath+"/";
                     Log.e("envpath", envPath);
@@ -182,6 +204,175 @@ String fpath;
                             FileModel.setTitle(list[i].getName());
                             FileModel.setDirectory(list[i].isDirectory());
                             FileModel.setParentDir(envPath);
+                            Path path
+                                    = Paths.get(list[i].getAbsolutePath());
+                            FileModel.setSize(android.text.format.Formatter.formatFileSize(getActivity().getApplicationContext(), Files.size(path)));
+                            if(list[i].isDirectory()) {
+                                FileModel.setFileType("folder");
+                                FileModel.setImage(ContextCompat.getDrawable(getActivity().getApplicationContext(),R.drawable.folder));
+                            }
+                            else{
+                                mimeType = URLConnection.guessContentTypeFromName(list[i].getAbsolutePath());
+                                if(mimeType != null && mimeType.startsWith("image")) {
+                                    FileModel.setFileType("image");
+                                    FileModel.setImage(Drawable.createFromPath(FileModel.getPath()));
+                                }
+                                else if(mimeType != null && mimeType.startsWith("video")) {
+                                    FileModel.setFileType("video");
+                                    FileModel.setImage(Drawable.createFromPath(FileModel.getPath()));
+                                }
+                                else if(mimeType != null && mimeType.startsWith("audio")) {
+                                    FileModel.setFileType("audio");
+                                    FileModel.setImage(ContextCompat.getDrawable(getActivity().getApplicationContext(),R.drawable.music));
+                                }
+                                else {
+                                    extension = FilenameUtils.getExtension(list[i].getAbsolutePath());
+                                    FileModel.setFileType(extension.toLowerCase());
+
+
+                                    String imagePath = "";
+                                    Drawable d = ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.file);
+                                    switch (FileModel.getFileType()) {
+                                        case "aep":
+                                            FileModel.setFileType("aep");
+                                            d = ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.aep);
+                                            break;
+                                        case "ai":
+                                            FileModel.setFileType("ai");
+                                            d = ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.ai);
+                                            break;
+                                        case "asp":
+                                            FileModel.setFileType("asp");
+                                            d = ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.asp);
+                                            break;
+                                        case "c":
+                                            FileModel.setFileType("c");
+                                            d = ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.c);
+                                            break;
+                                        case "c++":
+                                            FileModel.setFileType("cplusplus");
+                                            d = ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.cplusplus);
+                                            break;
+                                        case "c#":
+                                            FileModel.setFileType("csharp");
+                                            d = ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.csharp);
+                                            break;
+                                        case "css":
+                                            FileModel.setFileType("css");
+                                            d = ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.css);
+                                            break;
+                                        case "csv":
+                                            FileModel.setFileType("csv");
+                                            d = ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.csv);
+                                            break;
+                                        case "dll":
+                                            FileModel.setFileType("dll");
+                                            d = ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.dll);
+                                            break;
+                                        case "dmg":
+                                            FileModel.setFileType("dmg");
+                                            d = ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.dmg);
+                                            break;
+                                        case "doc":
+                                            FileModel.setFileType("doc");
+                                            d = ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.doc);
+                                            break;
+                                        case "docs":
+                                            FileModel.setFileType("docs");
+                                            d = ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.doc);
+                                            break;
+                                        case "exe":
+                                            FileModel.setFileType("exe");
+                                            d = ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.exe);
+                                            break;
+                                        case "fla":
+                                            FileModel.setFileType("fla");
+                                            d = ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.fla);
+                                            break;
+                                        case "font":
+                                            FileModel.setFileType("font");
+                                            d = ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.font);
+                                            break;
+                                        case "html":
+                                            FileModel.setFileType("html");
+                                            d = ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.html);
+                                            break;
+                                        case "indd":
+                                            FileModel.setFileType("indd");
+                                            d = ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.indd);
+                                            break;
+                                        case "java":
+                                            FileModel.setFileType("java");
+                                            d = ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.java);
+                                            break;
+                                        case "js":
+                                            FileModel.setFileType("js");
+                                            d = ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.js);
+                                            break;
+                                        case "jsp":
+                                            FileModel.setFileType("jsp");
+                                            d = ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.jsp);
+                                            break;
+                                        case "log":
+                                            FileModel.setFileType("log");
+                                            d = ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.log);
+                                            break;
+                                        case "pdf":
+                                            FileModel.setFileType("pdf");
+                                            d = ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.pdf);
+                                            break;
+                                        case "psd":
+                                            FileModel.setFileType("psd");
+                                            d = ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.psd);
+                                            break;
+                                        case "py":
+                                            FileModel.setFileType("py");
+                                            d = ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.py);
+                                            break;
+                                        case "rar":
+                                            FileModel.setFileType("rar");
+                                            d = ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.rar);
+                                            break;
+                                        case "7z":
+                                            FileModel.setFileType("7z");
+                                            d = ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.sevenz);
+                                            break;
+                                        case "sql":
+                                            FileModel.setFileType("sql");
+                                            d = ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.sql);
+                                            break;
+                                        case "txt":
+                                            FileModel.setFileType("txt");
+                                            d = ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.txt);
+                                            break;
+                                        case "vb":
+                                            FileModel.setFileType("vb");
+                                            d = ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.vb);
+                                            break;
+                                        case "xls":
+                                        case "xlsx":
+                                            FileModel.setFileType("xls");
+                                            d = ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.xlsx);
+                                            break;
+                                        case "xml":
+                                            FileModel.setFileType("xml");
+                                            d = ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.xml);
+                                            break;
+                                        case "zip":
+                                            FileModel.setFileType("zip");
+                                            d = ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.zip);
+                                            break;
+                                        case "db":
+                                            FileModel.setFileType("db");
+                                            d = ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.database);
+                                            break;
+                                        default:
+                                            FileModel.setFileType("file");
+                                            d = ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.file);
+                                    }
+                                    FileModel.setImage(d);
+                                }
+                            }
                             imageList.add(FileModel);
                         }
 
@@ -344,11 +535,16 @@ String fpath;
         return true;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == STORAGE_PERMISSION && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             init();
-            getAllImages();
+            try {
+                getAllImages();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             setImageList();
             //setSelectedImageList();
         }

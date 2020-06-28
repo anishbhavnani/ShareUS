@@ -1,5 +1,7 @@
 package com.share.in.main;
 
+import android.graphics.drawable.Drawable;
+
 public class FileModel {
 
     String path;
@@ -8,6 +10,33 @@ public class FileModel {
     boolean isSelected;
     private int position;
     String parentDir;
+    String fileType;
+    Drawable image;
+    String size;
+
+    public String getSize() {
+        return size;
+    }
+
+    public void setSize(String size) {
+        this.size = size;
+    }
+
+    public Drawable getImage() {
+        return image;
+    }
+
+    public void setImage(Drawable image) {
+        this.image = image;
+    }
+
+    public String getFileType() {
+        return fileType;
+    }
+
+    public void setFileType(String fileType) {
+        this.fileType = fileType;
+    }
 
     public String getParentDir() {
         return parentDir;

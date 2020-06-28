@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,6 +21,7 @@ import android.widget.VideoView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
+import com.bumptech.glide.request.RequestOptions;
 import com.share.in.R;
 
 import java.util.ArrayList;
@@ -58,13 +60,33 @@ public class FileAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     @Override
     public  void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
-        if (holder.getItemViewType() == IMAGE_LIST) {;
+        if (holder.getItemViewType() == IMAGE_LIST) {
+            ;
             final ImageListViewHolder viewHolder = (ImageListViewHolder) holder;
 
             viewHolder.title.setText(imageList.get(position).getTitle());
-viewHolder.position=position;
+            viewHolder.position = position;
+            viewHolder.size.setText(imageList.get(position).getSize());
             //viewHolder.image.setVideoPath(imageList.get(position).getImage());
-
+            RequestOptions requestOptions = new RequestOptions();
+            requestOptions.isMemoryCacheable();
+            if (imageList.get(position).getFileType().equals("video")){
+                Glide.with(context).setDefaultRequestOptions(requestOptions).load(imageList.get(position).getPath())
+                        .placeholder(R.color.codeGray)
+                        .centerCrop()
+                        .transition(DrawableTransitionOptions.withCrossFade(500))
+                        .into(viewHolder.image);
+            viewHolder.play_button.setVisibility(View.VISIBLE);
+        }
+            else {
+                Glide.with(context)
+                        .load(imageList.get(position).getImage())
+                        .centerCrop()
+                        .into(viewHolder.image);
+                viewHolder.play_button.setVisibility(View.INVISIBLE);
+                if(imageList.get(position).getFileType().equals("folder"))
+                    viewHolder.size.setVisibility(View.INVISIBLE);
+            }
             if (imageList.get(position).isSelected()) {
                 viewHolder.checkBox.setChecked(true);
             } else {;
@@ -84,16 +106,17 @@ viewHolder.position=position;
     }
 
     public class ImageListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        ImageView image;
+        ImageView image,play_button;
         CheckBox checkBox;
-        TextView title;
+        TextView title,duration,size;
         int position;
         public ImageListViewHolder(View itemView) {
             super(itemView);
             image = itemView.findViewById(R.id.image);
+            play_button= itemView.findViewById(R.id.play1);
             checkBox = itemView.findViewById(R.id.circle);
             title=itemView.findViewById(R.id.vidname);
-
+            size=itemView.findViewById(R.id.vidsize);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

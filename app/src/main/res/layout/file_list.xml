@@ -18,7 +18,7 @@
         <ImageView
             android:id="@+id/image"
             android:layout_width="72dp"
-            android:layout_height="60dp"
+            android:layout_height="50dp"
             android:layout_marginTop="5dp"
             android:layout_marginLeft="5dp"
             android:layout_alignParentLeft="true"
@@ -32,15 +32,15 @@
             android:layout_width="72dp"
             android:layout_height="15dp"
             android:layout_above="@+id/image"
-            android:layout_alignBottom="@+id/image"
-            android:layout_marginLeft="5dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="18dp"
             android:layout_marginBottom="-5dp"
-            android:background="#7F000000">
+            >
         <ImageView
-            android:id="@+id/play_button"
+            android:id="@+id/play1"
             android:layout_width="25dp"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_media_play" />
+            android:src="@drawable/play1" />
 
 
         </RelativeLayout>
@@ -51,6 +51,16 @@
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/image"
         android:textSize="15sp" />
+
+
+        <TextView
+            android:id="@+id/vidsize"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/image"
+            android:layout_alignBottom="@+id/vidname"
+            android:textSize="10sp"
+            android:layout_marginBottom="-40dp"/>
 
         <CheckBox
             android:id="@+id/circle"
