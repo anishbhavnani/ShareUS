@@ -9,7 +9,7 @@
     android:focusable="true"
     android:foreground="?android:attr/selectableItemBackground"
     app:cardElevation="@dimen/activity_vertical_margin">
-  <RelativeLayout
+  <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:padding="0dp"
@@ -31,56 +31,38 @@
         />
 
 
-    <RelativeLayout
-        android:layout_width="72dp"
-        android:layout_height="15dp"
-        android:layout_above="@+id/image"
-        android:layout_alignBottom="@+id/image"
-        android:layout_marginLeft="5dp"
-        android:layout_marginBottom="-5dp"
-        android:background="#7F000000">
-      <ImageView
-          android:id="@+id/play_button"
-          android:layout_width="25dp"
-          android:layout_height="wrap_content"
-          android:src="@drawable/speaker" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="0dp">
 
       <TextView
-          android:id="@+id/duration"
+          android:id="@+id/vidname"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_toRightOf="@+id/play_button"
-          android:textColor="#ffffff"
-          android:textSize="10dip" />
-
-    </RelativeLayout>
-    <TextView
-        android:id="@+id/vidname"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/image"
-        android:textSize="15sp" />
+          android:layout_alignParentTop="true"
+          android:layout_weight="1"
+          android:textSize="15sp" />
 
 
-    <TextView
-        android:id="@+id/vidsize"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/image"
-        android:layout_alignBottom="@+id/vidname"
-        android:textSize="10sp"
-        android:layout_marginBottom="-50dp"/>
+      <TextView
+          android:id="@+id/vidsize"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="bottom"
+          android:layout_marginTop="@dimen/activity_vertical_margin"
+          android:textSize="10sp"
+          android:layout_marginBottom="5dp"/>
 
-
+    </LinearLayout>
     <CheckBox
         android:id="@+id/circle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="5dp"
-        android:layout_centerVertical="true"
         android:button="@drawable/custom_checkbox"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="-25dp"
         android:clickable="false" />
-  </RelativeLayout>
+  </LinearLayout>
 </androidx.cardview.widget.CardView>

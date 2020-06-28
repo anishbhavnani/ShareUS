@@ -52,7 +52,7 @@ public class AudioAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             final ImageListViewHolder viewHolder = (ImageListViewHolder) holder;
             Log.e("onBindViewHolder", "123");
             viewHolder.title.setText(imageList.get(position).getTitle());
-            viewHolder.duration.setText(imageList.get(position).getDuration());
+         //   viewHolder.duration.setText(imageList.get(position).getDuration());
             viewHolder.size.setText(imageList.get(position).getSize());
             //viewHolder.image.setAudioPath(imageList.get(position).getImage());
         /*    Glide.with(context)
