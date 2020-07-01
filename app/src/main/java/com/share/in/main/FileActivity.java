@@ -48,6 +48,8 @@ import java.text.FieldPosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -73,7 +75,7 @@ public class FileActivity extends Fragment implements View.OnClickListener {
     Button done;
 String fpath;
     public FileActivity(){
-
+        FileModel.filePath=new HashSet<String>();
     }
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void setPath(String fpath) throws IOException {
@@ -154,7 +156,8 @@ String fpath;
             @Override
             public void onItemClick(int position, View v) {
                 try {
-                    setPath(imageList.get(position).getPath());
+                    if(imageList.get(position).isDirectory)
+                        setPath(imageList.get(position).getPath());
                 } catch (ArrayIndexOutOfBoundsException | IOException ed) {
                     ed.printStackTrace();
                 }
@@ -198,7 +201,7 @@ String fpath;
                     if (dir.getAbsoluteFile().exists()) {
                         Log.e("path", dir.toString());
                         File list[] = dir.listFiles();
-                        for (int i = 0; i < list.length; i++) {
+                        for (int i = 0; i<list.length; i++) {
                             FileModel FileModel = new FileModel();
                             FileModel.setPath(list[i].getAbsolutePath());
                             FileModel.setTitle(list[i].getName());
@@ -215,11 +218,11 @@ String fpath;
                                 mimeType = URLConnection.guessContentTypeFromName(list[i].getAbsolutePath());
                                 if(mimeType != null && mimeType.startsWith("image")) {
                                     FileModel.setFileType("image");
-                                    FileModel.setImage(Drawable.createFromPath(FileModel.getPath()));
+                                   // FileModel.setImage(Drawable.createFromPath(FileModel.getPath()));
                                 }
                                 else if(mimeType != null && mimeType.startsWith("video")) {
                                     FileModel.setFileType("video");
-                                    FileModel.setImage(Drawable.createFromPath(FileModel.getPath()));
+                                    //FileModel.setImage(ContextCompat.getDrawable(getActivity().getApplicationContext(),R.drawable.file));
                                 }
                                 else if(mimeType != null && mimeType.startsWith("audio")) {
                                     FileModel.setFileType("audio");
@@ -228,7 +231,6 @@ String fpath;
                                 else {
                                     extension = FilenameUtils.getExtension(list[i].getAbsolutePath());
                                     FileModel.setFileType(extension.toLowerCase());
-
 
                                     String imagePath = "";
                                     Drawable d = ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.file);

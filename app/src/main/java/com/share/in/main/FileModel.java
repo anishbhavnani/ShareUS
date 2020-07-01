@@ -2,6 +2,9 @@ package com.share.in.main;
 
 import android.graphics.drawable.Drawable;
 
+import java.util.ArrayList;
+import java.util.Set;
+
 public class FileModel {
 
     String path;
@@ -14,6 +17,18 @@ public class FileModel {
     Drawable image;
     String size;
 
+    public static Set<String> getFilePath() {
+        return filePath;
+    }
+
+    public static void setFilePath(Set<String> filePath) {
+        FileModel.filePath = filePath;
+    }
+
+    FileModel(){
+
+    }
+    static Set<String> filePath;
     public String getSize() {
         return size;
     }
