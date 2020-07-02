@@ -34,6 +34,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -55,6 +56,9 @@ public class VideosActivity extends Fragment {
   File image;
   Button done;
 
+  public VideosActivity(){
+    VideoModel.filePath=new HashSet<String>();
+  }
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     View view = inflater.inflate(R.layout.activity_videos, container, false);

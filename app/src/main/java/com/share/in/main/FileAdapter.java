@@ -1,5 +1,6 @@
 package com.share.in.main;
 
+import android.app.Activity;
 import android.content.Context;
 
 import androidx.annotation.RequiresApi;
@@ -19,6 +20,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -156,8 +158,10 @@ public class FileAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         CheckBox checkBox;
         TextView title,duration,size;
         int position;
+        Button send;
         public ImageListViewHolder(View itemView) {
             super(itemView);
+            send=(Button)((Activity)context).findViewById(R.id.button1);
             image = itemView.findViewById(R.id.image);
             play_button= itemView.findViewById(R.id.play1);
             checkBox = itemView.findViewById(R.id.circle);
@@ -174,41 +178,12 @@ public class FileAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
                 }
             });
 
-
-            /*
-            checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-
-                @RequiresApi(api = Build.VERSION_CODES.N)
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView,
-                                             boolean isChecked) {
-                    if(isChecked){
-                        FileModel.filePath.add(imageList.get(position).getPath());
-                        Log.e("FileModel Path : ",FileModel.filePath.size()+ "");
-                        if(imageList.get(position).isDirectory())
-                            getFilesRecursive(new File(imageList.get(position).getPath()));
-                        for(String str:FileModel.filePath)
-                            Log.e("Selected Path : ",str);
-
-                    } else {
-                        if(imageList!=null) {
-                            Log.e("FilePath : ", (FileModel.filePath!=null) + "");
-                            FileModel.filePath.removeIf((String fpath) -> fpath.startsWith(imageList.get(position).getPath()));
-                            FileModel.filePath.remove(imageList.get(position).getParentDir());
-                            for (String str : FileModel.filePath)
-                                Log.e("UnSelected Path : ", str);
-                        }
-                    }
-
-                }
-            }); */
             checkBox.setOnClickListener(new View.OnClickListener() {
                 @RequiresApi(api = Build.VERSION_CODES.N)
                 @Override
                 public void onClick(View v) {
-                    for(String str:FileModel.filePath)
-                        Log.e("FilePath ",str);
                     if(checkBox.isChecked()){
+                        FileModel.setCount(FileModel.getCount()+1);
                         if(imageList.get(position).isDirectory())
                             FileModel.filePath.add(imageList.get(position).getPath()+"/");
                         else
@@ -217,14 +192,18 @@ public class FileAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
                             getFilesRecursive(new File(imageList.get(position).getPath()));
 
                     } else {
-                        Log.e("onBindViewHolder", checkBox.isChecked() + "");
-                        Log.e("FileModel Path : ",imageList.get(position).getPath()+"/");
-                        Log.e("FilePath  Parent: ", imageList.get(position).getParentDir());
                         if(imageList!=null) {
+                            FileModel.setCount(FileModel.getCount()-1);
                             FileModel.filePath.removeIf((String fpath) -> fpath.startsWith(imageList.get(position).getPath()));
                             FileModel.filePath.remove(imageList.get(position).getParentDir());
                         }
                     }
+                    send.setText("Send ("+(
+                            (ImageModel.filePath!=null ? ImageModel.filePath.size():0)+
+                                    (VideoModel.filePath!=null ? VideoModel.filePath.size() : 0)+
+                                    (AppModel.filePath!=null ? AppModel.filePath.size() : 0)+
+                                    (AudioModel.filePath!=null ? AudioModel.filePath.size() : 0)+
+                                    FileModel.getCount())+")");
                 }
             });
         }

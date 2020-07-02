@@ -1,5 +1,7 @@
 package com.share.in.main;
 
+import java.util.Set;
+
 public class VideoModel {
 
     String image;
@@ -10,7 +12,14 @@ public class VideoModel {
     boolean isSelected;
     String size;
     String path;
+    static Set<String> filePath;
+    public static Set<String> getFilePath() {
+        return filePath;
+    }
 
+    public static void setFilePath(Set<String> filePath) {
+        FileModel.filePath = filePath;
+    }
     public String getPath() {
         return path;
     }

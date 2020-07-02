@@ -74,8 +74,11 @@ public class FileActivity extends Fragment implements View.OnClickListener {
     File image;
     Button done;
 String fpath;
+
     public FileActivity(){
         FileModel.filePath=new HashSet<String>();
+        FileModel.setCount(0);
+
     }
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void setPath(String fpath) throws IOException {
@@ -99,11 +102,8 @@ String fpath;
                 @RequiresApi(api = Build.VERSION_CODES.O)
                 @Override
                 public boolean onKey(View v, int keyCode, KeyEvent event) {
-                    Log.e("FileActivity", "key123");
                     if (event.getAction() == KeyEvent.ACTION_DOWN) {
-                        Log.e("FileActivity", "key456");
                         if (keyCode == KeyEvent.KEYCODE_BACK) {
-                            Log.e("FileActivity", "key789");
                             if(imageList.size()>0) {
                                 fpath = imageList.get(0).getParentDir();
                                 File f=new File(fpath);
@@ -113,7 +113,15 @@ String fpath;
                                     e.printStackTrace();
                                 }
                                 return true;
+                            }else{
+                                File f=new File(fpath);
+                                try {
+                                    setPath(f.getAbsoluteFile().getParent());
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
                             }
+
                         }
                     }
                     return false;

@@ -55,6 +55,8 @@
             android:layout_marginRight="20dp"
             android:layout_centerVertical="true"
             android:button="@drawable/custom_checkbox"
-            android:clickable="false" />
+            android:clickable="false"
+            android:checked="true"
+            android:visibility="invisible"/>
     </RelativeLayout>
 </androidx.cardview.widget.CardView>

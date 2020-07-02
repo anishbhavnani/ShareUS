@@ -1,12 +1,17 @@
 package com.share.in.main;
 
+import android.app.Activity;
 import android.content.Context;
+
+import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -16,6 +21,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.share.in.R;
 
+import java.io.File;
 import java.util.ArrayList;
 import android.util.SparseBooleanArray;
 public class VideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
@@ -33,6 +39,7 @@ public class VideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         this.imageList = imageList;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public  RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == IMAGE_LIST) {;
@@ -57,6 +64,10 @@ public class VideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             viewHolder.title.setText(imageList.get(position).getTitle());
             viewHolder.duration.setText(imageList.get(position).getDuration());
             viewHolder.size.setText(imageList.get(position).getSize());
+            if(VideoModel.filePath.contains(imageList.get(position).getPath()+"/")) {
+                //viewHolder.checkBox.setChecked(true);
+                viewHolder.checkBox.setVisibility(View.VISIBLE);
+            }
             //viewHolder.image.setVideoPath(imageList.get(position).getImage());
             Glide.with(context)
                     .load(imageList.get(position).getImage())
@@ -65,11 +76,7 @@ public class VideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
                     .transition(DrawableTransitionOptions.withCrossFade(500))
                     .into(viewHolder.image);
 
-            if (imageList.get(position).isSelected()) {
-                viewHolder.checkBox.setChecked(true);
-            } else {;
-                viewHolder.checkBox.setChecked(false);
-            }
+
             viewHolder.bind(position);
         } else {;
             ImagePickerViewHolder viewHolder = (ImagePickerViewHolder) holder;
@@ -87,23 +94,45 @@ public class VideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         ImageView image;
         CheckBox checkBox;
         TextView title,duration,size;
+        Button send;
+        @RequiresApi(api = Build.VERSION_CODES.N)
         public ImageListViewHolder(View itemView) {
             super(itemView);
+            send=(Button)((Activity)context).findViewById(R.id.button1);
             image = itemView.findViewById(R.id.image);
             checkBox = itemView.findViewById(R.id.circle);
-            title=itemView.findViewById(R.id.vidname);
-            duration=itemView.findViewById(R.id.duration);
-            size=itemView.findViewById(R.id.vidsize);
-            itemView.setOnClickListener(this);
-        }
+            title = itemView.findViewById(R.id.vidname);
+            duration = itemView.findViewById(R.id.duration);
+            size = itemView.findViewById(R.id.vidsize);
 
+            itemView.setOnClickListener(v ->{
+                int position=getAdapterPosition();
+                //checkBox.setChecked(!checkBox.isChecked());
+                if(!VideoModel.filePath.contains(imageList.get(position).getPath()+"/")) {
+                    checkBox.setVisibility(View.VISIBLE);
+                            VideoModel.filePath.add(imageList.get(position).getPath() + "/");
+                    } else {
+                        if (imageList != null) {
+                            checkBox.setVisibility(View.INVISIBLE);
+                            VideoModel.filePath.removeIf((String fpath) -> fpath.startsWith(imageList.get(position).getPath()));
+                        }
+                    }
+                    send.setText("Send ("+(
+                            (ImageModel.filePath!=null ? ImageModel.filePath.size():0)+
+                                    (VideoModel.filePath!=null ? VideoModel.filePath.size() : 0)+
+                                    (AppModel.filePath!=null ? AppModel.filePath.size() : 0)+
+                                    (AudioModel.filePath!=null ? AudioModel.filePath.size() : 0)+
+                                    FileModel.getCount())+")");
+
+            });
+        }
         void bind(int position) {
             // use the sparse boolean array to check
-            if (!itemStateArray.get(position, false)) {
+            /*if (!itemStateArray.get(position, false)) {
                 checkBox.setChecked(false);}
             else {
                 checkBox.setChecked(true);
-            }
+            }*/
 
         }
 
@@ -111,11 +140,11 @@ public class VideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         public void onClick(View v) {
             int adapterPosition = getAdapterPosition();
             if (!itemStateArray.get(adapterPosition, false)) {
-                checkBox.setChecked(true);
+                //checkBox.setChecked(true);
                 itemStateArray.put(adapterPosition, true);
             }
             else  {
-                checkBox.setChecked(false);
+                //checkBox.setChecked(false);
                 itemStateArray.put(adapterPosition, false);
             }
         }

@@ -35,6 +35,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
@@ -57,6 +58,10 @@ public class AppsActivity extends Fragment {
     File image;
     Button done;
 
+
+    public AppsActivity(){
+        AppModel.filePath=new HashSet<String>();
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -144,6 +149,7 @@ public class AppsActivity extends Fragment {
                 Drawable appIcon = packageManager
                         .getApplicationIcon(pi.applicationInfo);
                 appIcon.setBounds(0, 0, 40, 40);
+
                 String appName = packageManager.getApplicationLabel(
                         pi.applicationInfo).toString();
                 Context ctx = getActivity().getApplicationContext();
@@ -154,8 +160,8 @@ public class AppsActivity extends Fragment {
                 long size = file.length();
                 AppModel appModel=new AppModel();
                 appModel.setTitle(appName);
-
                 appModel.setImage(appIcon);
+                appModel.setPath(pi.applicationInfo.publicSourceDir);
                 appModel.setAppSize(android.text.format.Formatter.formatFileSize(getActivity().getApplicationContext(), size)+"");
                 if (!b) {
                     packageList1.add(pi);

@@ -17,6 +17,16 @@ public class FileModel {
     Drawable image;
     String size;
 
+    public static int getCount() {
+        return count;
+    }
+
+    public static void setCount(int count) {
+        FileModel.count = count;
+    }
+
+    static int count;
+
     public static Set<String> getFilePath() {
         return filePath;
     }

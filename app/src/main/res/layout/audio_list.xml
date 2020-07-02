@@ -64,6 +64,8 @@
         android:button="@drawable/custom_checkbox"
         android:layout_gravity="center_vertical"
         android:layout_marginLeft="-35dp"
-        android:clickable="false" />
+        android:clickable="false"
+        android:checked="true"
+        android:visibility="invisible"/>
   </LinearLayout>
 </androidx.cardview.widget.CardView>
