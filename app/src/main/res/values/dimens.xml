@@ -10,7 +10,8 @@
     <dimen name="item_margin_half">1dp</dimen>
 
     <dimen name="folder_column_width">120dp</dimen>
-
+    <dimen name="tablet_list_width">300dp</dimen>
+    <dimen name="phone_list_height">200dp</dimen>
     <dimen name="picture_column_width">90dp</dimen>
 
 </resources>

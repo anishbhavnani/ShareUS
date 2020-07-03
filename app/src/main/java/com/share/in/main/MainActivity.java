@@ -1,4 +1,5 @@
 package com.share.in.main;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
 import com.share.in.R;
+import com.share.in.main.transfer.TransferActivity;
 import com.share.in.main.view.UIFragment;
 
 public class MainActivity extends AppCompatActivity implements ContainerFragment.TabLayoutSetupCallback,
@@ -61,6 +63,11 @@ public class MainActivity extends AppCompatActivity implements ContainerFragment
     }
   }
 
+  public void sendFiles(View view)
+  {
+    startActivity( new Intent( getApplicationContext(), TransferActivity.class ) );
+    // Do something in response to button click
+  }
   @Override
   public void setupTabLayout(ViewPager viewPager) {
     TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);

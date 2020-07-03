@@ -57,6 +57,7 @@
                 android:textColor="#ffffff"
                 android:layout_marginLeft="50dp"
                 android:background="@drawable/sendbutton"
+                android:onClick="sendFiles"
                 android:text="Send" />
 
 
