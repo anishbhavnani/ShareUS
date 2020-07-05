@@ -38,6 +38,7 @@ public class TransferActivity extends Activity implements ChannelListener, Devic
     private final IntentFilter intentFilter = new IntentFilter();
     private Channel channel;
     private BroadcastReceiver receiver = null;
+    private String action;
 
 
     public void setIsWifiP2pEnabled(boolean isWifiP2pEnabled) {
@@ -47,6 +48,11 @@ public class TransferActivity extends Activity implements ChannelListener, Devic
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            action = extras.getString("key");
+            //The key argument here must match that used in the other activity
+        }
         setContentView(R.layout.transfer_main);
         // add necessary intent values to be matched.
         intentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);
@@ -56,6 +62,10 @@ public class TransferActivity extends Activity implements ChannelListener, Devic
 
         manager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
         channel = manager.initialize(this, getMainLooper(), null);
+
+        if (manager != null && channel != null) {
+            startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));
+        }
     }
 
 
@@ -97,6 +107,36 @@ public class TransferActivity extends Activity implements ChannelListener, Devic
         return true;
     }
 
+
+
+    public void searchDevice(View view)
+    {
+        if (!isWifiP2pEnabled) {
+            Toast.makeText(TransferActivity.this, R.string.p2p_off_warning,
+                    Toast.LENGTH_SHORT).show();
+            view.findViewById(R.id.discover).setVisibility(View.VISIBLE);
+        }
+        else {
+            final DeviceListFragment fragment = (DeviceListFragment) getFragmentManager()
+                    .findFragmentById(R.id.fragment_list);
+            fragment.onInitiateDiscovery();
+            manager.discoverPeers(channel, new WifiP2pManager.ActionListener() {
+
+                @Override
+                public void onSuccess() {
+                    Toast.makeText(TransferActivity.this, "Searching",
+                            Toast.LENGTH_SHORT).show();
+                    view.findViewById(R.id.discover).setVisibility(View.INVISIBLE);
+                }
+
+                @Override
+                public void onFailure(int reasonCode) {
+                    Toast.makeText(TransferActivity.this, "Search Failed : " + reasonCode,
+                            Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

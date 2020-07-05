@@ -17,8 +17,12 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
 import com.share.in.R;
+import com.share.in.main.transfer.FileReceiver;
+import com.share.in.main.transfer.FileSender;
 import com.share.in.main.transfer.TransferActivity;
 import com.share.in.main.view.UIFragment;
+
+import java.io.File;
 
 public class MainActivity extends AppCompatActivity implements ContainerFragment.TabLayoutSetupCallback,
         PageFragment.OnListItemClickListener {
@@ -65,7 +69,28 @@ public class MainActivity extends AppCompatActivity implements ContainerFragment
 
   public void sendFiles(View view)
   {
-    startActivity( new Intent( getApplicationContext(), TransferActivity.class ) );
+      /*String value="Send";
+      Intent i = new Intent(MainActivity.this, TransferActivity.class);
+      i.putExtra("key",value);
+      startActivity(i);*/
+
+    if(ImageModel.filePath!=null && ImageModel.filePath.size()>0){
+      Intent intent = new Intent(this, FileSender.class);
+      for(String str:ImageModel.filePath) {
+        intent.putExtra("path", str);
+        break;
+      }
+      startActivity(intent);
+    } else {
+      Toast.makeText(this, "Please Select a File", Toast.LENGTH_SHORT).show();
+    }
+    // Do something in response to button click
+  }
+
+  public void receiveFiles(View view)
+  {
+    Intent i = new Intent(this, FileReceiver.class);
+    startActivity(i);
     // Do something in response to button click
   }
   @Override

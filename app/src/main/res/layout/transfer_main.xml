@@ -12,6 +12,18 @@
         android:orientation="vertical"
         android:layout_alignParentTop="true"
         android:layout_weight="0.9">
+
+        <Button
+            android:id="@+id/discover"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:textColor="#ffffff"
+            android:layout_marginLeft="50dp"
+            android:background="@drawable/sendbutton"
+            android:onClick="searchDevice"
+            android:text="Search Device" />
+
         <fragment
             class="com.share.in.main.transfer.DeviceListFragment"
             android:id="@+id/fragment_list"
